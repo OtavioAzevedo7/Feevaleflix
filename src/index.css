@@ -28,3 +28,9 @@ a {
   --backEnd: #00C86F;
   --backgroundApp: #141414;
 }
+
+#root{
+  min-height: calc(100vh - var(--bodyPaddingTop));
+  display: flex;
+  flex-direction: column;
+}
