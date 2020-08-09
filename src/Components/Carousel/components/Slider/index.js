@@ -54,7 +54,7 @@ const Slider = ({ children }) => (
       adaptiveHeight: true,
       
       slidesToShow: 3,
-      slidesToScroll: 2,
+      slidesToScroll: 1,
       initialSlide: 0,
 
     }}
