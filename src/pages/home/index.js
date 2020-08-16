@@ -1,53 +1,54 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import Menu from '../../Components/Menu';
-import dadosIniciais from '../../data/dados_iniciais.json';
 import BannerMain from '../../Components/BannerMain';
 import Carousel from '../../Components/Carousel';
-import Footer from '../../Components/Footer';
-
-const AppWrapper = styled.div`
-  background-color:var(--backgroundApp);
-`;
+import PageTemplate from '../../Components/PageTemplate';
+import categoriasRepository from '../../repositories/categorias';
 
 function Home() {
+  const [dadosIniciais, setDadosIniciais] = useState([]);
+  useEffect(() => {
+    categoriasRepository.getAllWithVideos()
+      .then((categoriasComVideos) => {
+        setDadosIniciais(categoriasComVideos);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
+
   return (
-    <AppWrapper style={{ background: "#141414" }}>
+    <PageTemplate paddingAll={0}>
       <Menu />
 
-      <BannerMain
-        videoTitle={dadosIniciais.categorias[0].videos[0].titulo}
-        url={dadosIniciais.categorias[0].videos[0].url}
-        videoDescription={"Dia 30/04, às 17h, teremos a live Saúde mental em época de quarentena, como lidar com a ansiedade com os psicólogos Roberta da Silveira e Henrique Zimmermann. #FeevaleLive"}
-      />
+      {dadosIniciais.length === 0 && (<div className="spinner" />)}
 
-      <Carousel
-        ignoreFirstVideo
-        category={dadosIniciais.categorias[0]}
-      />
+      {dadosIniciais.map((categoria, indice) => {
+        if (indice === 0) {
+          return (
+            <div key={categoria.id}>
+              <BannerMain
+                videoTitle={dadosIniciais[0].videos[0].titulo}
+                url={dadosIniciais[0].videos[0].url}
+                videoDescription={dadosIniciais[0].videos[0].description}
+              />
+              <Carousel
+                ignoreFirstVideo
+                category={dadosIniciais[0]}
+              />
+            </div>
+          );
+        }
 
-      <Carousel
-        category={dadosIniciais.categorias[1]}
-      />
+        return (
+          <Carousel
+            key={categoria.id}
+            category={categoria}
+          />
+        );
+      })}
 
-      {/* <Carousel
-        category={dadosIniciais.categorias[2]}
-      />      
-
-      <Carousel
-        category={dadosIniciais.categorias[3]}
-      />      
-
-      <Carousel
-        category={dadosIniciais.categorias[4]}
-      />      
-
-      <Carousel
-        category={dadosIniciais.categorias[5]}
-      />       */}
-
-      <Footer />
-    </AppWrapper>
+    </PageTemplate>
   );
 }
 
